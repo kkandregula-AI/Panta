@@ -52,12 +52,15 @@ header{position:sticky;top:0;z-index:40;padding:calc(13px + env(safe-area-inset-
 /* pond switcher */
 .pondbar{display:flex;gap:7px;overflow-x:auto;margin-top:10px;padding-bottom:3px;scrollbar-width:none}
 .pondbar::-webkit-scrollbar{display:none}
-.pondchip{flex:none;border:1px solid var(--line-2);border-radius:999px;padding:7px 14px;font-size:13px;
-  color:var(--muted);background:var(--panel-2);display:flex;align-items:center;gap:6px}
+.pondchip{flex:none;border:1px solid var(--line-2);border-radius:999px;padding:0 4px 0 0;font-size:13px;
+  color:var(--muted);background:var(--panel-2);display:flex;align-items:center;overflow:hidden}
 .pondchip.on{background:rgba(212,175,106,.14);border-color:var(--gold-dim);color:var(--gold-soft);font-weight:600}
+.pondchip .pondname{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 13px;color:inherit;font:inherit;font-weight:inherit}
+.pondchip .ponddel{padding:5px 9px 5px 4px;color:var(--faint);font-size:16px;line-height:1}
+.pondchip.on .ponddel{color:var(--gold-dim)}
 .pondchip .pd{width:6px;height:6px;border-radius:50%;background:var(--good)}
 .pondchip.on .pd{box-shadow:0 0 7px currentColor}
-.pondchip.addp{color:var(--gold);border-style:dashed}
+.pondchip.addp{color:var(--gold);border-style:dashed;padding:7px 14px}
 
 main{padding:0 16px}
 section{display:none;animation:fade .3s ease}
@@ -198,7 +201,19 @@ section.on{display:block}
 .verdict.grow{background:var(--good-bg);color:var(--good)}
 .verdict.sell,.verdict.neutral{background:var(--warn-bg);color:var(--warn)}
 
-/* buyers */
+/* expense breakdown */
+.exrow{margin-top:11px}
+.exrow .exh{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.exrow .exh .en{color:var(--text)} .exrow .exh .ep{margin-left:auto;font-family:"DM Mono",monospace;color:var(--gold-soft)}
+.exrow .exh .epc{font-size:11px;color:var(--muted);width:38px;text-align:right;font-family:"DM Mono",monospace}
+.exbar{height:7px;border-radius:5px;background:var(--panel-2);margin-top:6px;overflow:hidden}
+.exbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+.exli{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line-2);font-size:14.5px}
+.exli:last-child{border-bottom:none}
+.exli .eci{width:30px;height:30px;border-radius:8px;background:var(--panel-2);display:grid;place-items:center;font-size:15px;flex:none}
+.exli .ecn{min-width:0} .exli .ecn .t1{font-size:14.5px} .exli .ecn .t2{font-size:12px;color:var(--muted);font-family:"DM Mono",monospace}
+.exli .eamt{margin-left:auto;font-family:"DM Mono",monospace;font-size:15px;color:var(--gold-soft)}
+.exli .exx{color:var(--faint);font-size:19px;padding-left:4px}
 .buyer{display:flex;align-items:center;gap:11px;padding:13px;border-radius:12px;margin-top:9px;
   background:var(--panel-2);border:1px solid var(--line-2)}
 .buyer.best{border-color:var(--good);background:var(--good-bg)}
@@ -234,9 +249,9 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-conte
   padding:9px 3px calc(9px + env(safe-area-inset-bottom));
   background:linear-gradient(0deg,rgba(10,10,12,.99),rgba(10,10,12,.9));
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line-2)}
-.nav-b{display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;flex:1;color:var(--faint)}
-.nav-b svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.7}
-.nav-b .nl{font-size:10.5px;font-weight:500}
+.nav-b{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 1px;flex:1;min-width:0;color:var(--faint)}
+.nav-b svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.nav-b .nl{font-size:9.5px;font-weight:500;white-space:nowrap}
 .nav-b.on{color:var(--gold-soft)}
 
 footer{text-align:center;padding:24px 20px 12px;color:var(--faint);font-size:11px;line-height:1.9}
@@ -414,10 +429,38 @@ footer b{color:var(--gold-dim);font-weight:500}
     <div class="ptable" id="m_ptable"></div>
     <p class="sub" data-k="price_disc">These are only starting points. Change them to your buyer's rate today.</p>
 
-    <div class="card">
-      <div class="field" style="margin-top:0"><label data-k="additive_cost">Health / additive cost (₹)</label><input id="m_add" inputmode="numeric" value="0"></div>
-      <div class="field"><label data-k="other_costs">Other costs — power, labour, lease… (₹)</label><input id="m_other" inputmode="numeric" value="0"></div>
+    <div class="note"><span class="ni">◆</span><span data-k="costs_moved">Break-even here uses every cost from the Costs tab — feed, power, labour, transport and more. Keep those updated for a true break-even.</span></div>
+  </section>
+
+  <!-- COSTS -->
+  <section id="costs">
+    <div class="eyebrow" data-k="costs_eyebrow">Where your money goes</div>
+    <h1 class="h-lead" data-k="costs_title">Crop expenses</h1>
+    <p class="sub" data-k="costs_sub">Feed is only part of the cost. Add power, labour, transport and the rest so your cost per kg is real.</p>
+
+    <div class="card gold">
+      <div class="pk-head"><span class="t" data-k="total_spent">Total spent so far</span><span class="m" id="ex_perkg"></span></div>
+      <div class="av" id="ex_total" style="font-family:'Cinzel',serif;font-size:32px;color:var(--gold-soft);margin-top:4px">₹0</div>
+      <div id="ex_break" style="margin-top:14px"></div>
     </div>
+
+    <div class="card gold">
+      <h3 data-k="add_expense">Add an expense</h3>
+      <div class="tlabel" data-k="pick_category">Pick a category</div>
+      <div class="chips" id="ex_cats"></div>
+      <div class="two" style="margin-top:12px">
+        <div class="field" style="margin-top:0"><label data-k="amount_rs">Amount (₹)</label><input id="ex_amt" inputmode="numeric" placeholder="0"></div>
+        <div class="field" style="margin-top:0"><label data-k="note_opt">Note (optional)</label><input id="ex_note" placeholder="—"></div>
+      </div>
+      <button class="btn solid" onclick="addExpense()" data-k="add_expense_btn">Add expense</button>
+    </div>
+
+    <div class="card">
+      <div class="field" style="margin-top:0"><label data-k="seed_cost">Seed cost (₹)</label><input id="ex_seed" inputmode="numeric"></div>
+      <p class="sub" data-k="seed_note">Set at stocking — edit here if it changed.</p>
+    </div>
+
+    <div class="card"><div id="ex_list"></div></div>
   </section>
 
   <!-- SELL -->
@@ -530,7 +573,15 @@ en:{
  breakeven:"Break-even price (cost)", profit_kg:"Profit per kg",
  price_by_count:"Price by count (₹/kg) — set today's rate",
  price_disc:"These are only starting points. Change them to your buyer's rate today.",
- additive_cost:"Health / additive cost (₹)", other_costs:"Other costs — power, labour, lease… (₹)",
+ costs_moved:"Break-even here uses every cost from the Costs tab — feed, power, labour, transport and more. Keep those updated for a true break-even.",
+ costs_eyebrow:"Where your money goes", costs_title:"Crop expenses",
+ costs_sub:"Feed is only part of the cost. Add power, labour, transport and the rest so your cost per kg is real.",
+ total_spent:"Total spent so far", add_expense:"Add an expense", pick_category:"Pick a category",
+ amount_rs:"Amount (₹)", note_opt:"Note (optional)", add_expense_btn:"Add expense",
+ seed_note:"Set at stocking — edit here if it changed.", no_expense:"No expenses added yet. Feed and seed are counted automatically.",
+ cat_seed:"Seed", cat_feed:"Feed", cat_power:"Electricity / Diesel", cat_labour:"Labour",
+ cat_aeration:"Aeration / Equipment", cat_probiotic:"Probiotics / Additives", cat_medicine:"Medicines / Health",
+ cat_prep:"Pond prep / Lime / Chemicals", cat_transport:"Transport", cat_lease:"Lease / Rent", cat_other:"Other",
  timing_title:"Sell now, or grow bigger?", timing_sub:"Pick a target size and see if waiting pays.",
  target_count:"Grow to this count", sell_now:"Sell now", grow_to:"Grow to",
  net_from_wait:"Net gain from waiting", extra_days:"Extra days", extra_feed_cost:"Extra feed cost",
@@ -558,7 +609,7 @@ en:{
  stage1:"Day 1–30", stage2:"Day 31–60", stage3:"Day 61–90", stage4:"Day 90+",
  edu_only:"Education & awareness only",
  disclaimer:"For farmer education and awareness only — not financial, veterinary or trading advice. All growth, survival, cost and price figures are rough estimates, not guarantees. Always confirm count, rate and pond health with your buyer, technician or dealer before making any decision.",
- nav_pond:"Pond", nav_feed:"Feed", nav_growth:"Growth", nav_market:"Market", nav_sell:"Sell", nav_learn:"Learn",
+ nav_pond:"Pond", nav_feed:"Feed", nav_growth:"Growth", nav_market:"Market", nav_costs:"Costs", nav_sell:"Sell", nav_learn:"Learn",
  days:"days", day:"day", perkg:"/kg", good:"Good", watch:"Watch", high:"High", low:"Low",
  need_fields:"Please fill stocking date and seed count.", no_feed:"No feed added yet.",
  no_sample:"No sample yet. Add your first weight above.", need_crop:"Start a crop first.",
@@ -593,7 +644,15 @@ te:{
  breakeven:"కనీస ధర (ఖర్చు)", profit_kg:"కేజీకి లాభం",
  price_by_count:"కౌంట్ ప్రకారం ధర (₹/కేజీ) — ఈరోజు ధర పెట్టండి",
  price_disc:"ఇవి మొదటి అంచనాలు మాత్రమే. ఈరోజు మీ కొనుగోలుదారు ధరకు మార్చండి.",
- additive_cost:"ఆరోగ్య / అడిటివ్ ఖర్చు (₹)", other_costs:"ఇతర ఖర్చులు — కరెంట్, కూలీ, లీజు… (₹)",
+ costs_moved:"ఇక్కడ కనీస ధర (బ్రేక్-ఈవెన్) ఖర్చుల ట్యాబ్‌లోని అన్ని ఖర్చులను — దాణా, కరెంట్, కూలీ, రవాణా వంటివి — వాడుతుంది. నిజమైన కనీస ధర కోసం వాటిని అప్‌డేట్ చేస్తూ ఉండండి.",
+ costs_eyebrow:"మీ డబ్బు ఎక్కడ ఖర్చవుతోంది", costs_title:"పంట ఖర్చులు",
+ costs_sub:"దాణా ఖర్చులో ఒక భాగం మాత్రమే. కరెంట్, కూలీ, రవాణా వంటివి కూడా చేర్చితేనే కేజీకి ఖర్చు నిజమవుతుంది.",
+ total_spent:"ఇప్పటివరకు మొత్తం ఖర్చు", add_expense:"ఖర్చు చేర్చండి", pick_category:"వర్గం ఎంచుకోండి",
+ amount_rs:"మొత్తం (₹)", note_opt:"గమనిక (ఐచ్ఛికం)", add_expense_btn:"ఖర్చు చేర్చు",
+ seed_note:"పిల్లలు వేసినప్పుడు పెట్టింది — మారితే ఇక్కడ సరిచేయండి.", no_expense:"ఇంకా ఖర్చులు చేర్చలేదు. దాణా, విత్తనం దానంతట అదే లెక్కించబడతాయి.",
+ cat_seed:"విత్తనం", cat_feed:"దాణా", cat_power:"కరెంట్ / డీజిల్", cat_labour:"కూలీ",
+ cat_aeration:"ఏరియేషన్ / పరికరాలు", cat_probiotic:"ప్రోబయోటిక్స్ / అడిటివ్స్", cat_medicine:"మందులు / ఆరోగ్యం",
+ cat_prep:"చెరువు తయారీ / సున్నం / రసాయనాలు", cat_transport:"రవాణా", cat_lease:"లీజు / అద్దె", cat_other:"ఇతర",
  timing_title:"ఇప్పుడు అమ్మాలా, పెద్దగా పెంచాలా?", timing_sub:"లక్ష్య సైజు ఎంచుకోండి, ఆగడం లాభమా చూడండి.",
  target_count:"ఈ కౌంట్ వరకు పెంచండి", sell_now:"ఇప్పుడు అమ్ము", grow_to:"వరకు పెంచు",
  net_from_wait:"ఆగడం వల్ల నికర లాభం", extra_days:"అదనపు రోజులు", extra_feed_cost:"అదనపు దాణా ఖర్చు",
@@ -621,7 +680,7 @@ te:{
  stage1:"రోజు 1–30", stage2:"రోజు 31–60", stage3:"రోజు 61–90", stage4:"రోజు 90+",
  edu_only:"విద్య, అవగాహన కోసం మాత్రమే",
  disclaimer:"రైతు అవగాహన, విద్య కోసం మాత్రమే — ఇది ఆర్థిక, పశువైద్య లేదా వ్యాపార సలహా కాదు. పెరుగుదల, బతికిన శాతం, ఖర్చు, ధర అంకెలు అన్నీ సుమారు అంచనాలే, హామీ కాదు. ఏ నిర్ణయం తీసుకునే ముందైనా కౌంట్, ధర, చెరువు ఆరోగ్యాన్ని మీ కొనుగోలుదారు, టెక్నీషియన్ లేదా డీలర్‌తో నిర్ధారించుకోండి.",
- nav_pond:"చెరువు", nav_feed:"దాణా", nav_growth:"పెరుగుదల", nav_market:"మార్కెట్", nav_sell:"అమ్మకం", nav_learn:"తెలుసుకో",
+ nav_pond:"చెరువు", nav_feed:"దాణా", nav_growth:"పెరుగుదల", nav_market:"మార్కెట్", nav_costs:"ఖర్చులు", nav_sell:"అమ్మకం", nav_learn:"తెలుసుకో",
  days:"రోజులు", day:"రోజు", perkg:"/కేజీ", good:"బాగుంది", watch:"గమనించండి", high:"ఎక్కువ", low:"తక్కువ",
  need_fields:"పిల్లలు వేసిన తేదీ, సంఖ్య నింపండి.", no_feed:"ఇంకా దాణా చేర్చలేదు.",
  no_sample:"ఇంకా నమూనా లేదు. పైన మొదటి బరువు చేర్చండి.", need_crop:"ముందు పంట మొదలుపెట్టండి.",
@@ -646,6 +705,7 @@ const NAV=[['pond','nav_pond','M4 10l8-6 8 6M6 9v10h12V9'],
 ['feed','nav_feed','M12 3v4M8 7h8l-1 5a3 3 0 01-6 0zM10 17v4M14 17v4'],
 ['growth','nav_growth','M4 19V5M4 19h16M7 15l3-4 3 2 4-7'],
 ['market','nav_market','M4 9h16l-1 11H5zM8 9V6a4 4 0 018 0v3'],
+['costs','nav_costs','M3 7h15a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a1 1 0 011-1h13M16 13h.5'],
 ['sell','nav_sell','M6 3h12l1 6H5zM5 9v11h14V9M9 13h6'],
 ['learn','nav_learn','M12 6s-2-2-5-2H3v13h4c3 0 5 2 5 2s2-2 5-2h4V4h-4c-3 0-5 2-5 2zM12 6v13']];
 const nav=document.getElementById('nav');
@@ -671,7 +731,7 @@ function startCrop(){
   const p={id:Date.now(),name:document.getElementById('s_name').value||('Pond '+(S.ponds.length+1)),
     area:parseFloat(document.getElementById('s_area').value)||1,stockDate:date,stocked:pl,
     seedCost:parseFloat(document.getElementById('s_seed').value)||0,
-    feedPrice:95,addCost:0,otherCost:0,survival:85,
+    feedPrice:95,survival:85,expenses:[],
     feeds:[],samples:[],prices:{...DEFAULT_PRICES},quotes:[],targetCount:null,sale:null,place:'',phone:''};
   S.ponds.push(p);S.active=p.id;addingPond=false;
   ['s_name','s_area','s_pl','s_seed'].forEach(i=>document.getElementById(i).value='');
@@ -679,8 +739,13 @@ function startCrop(){
 }
 function addPondStart(){addingPond=true;go('pond');renderAll();}
 function cancelAdd(){addingPond=false;renderAll();}
-function deletePond(){if(!C())return;if(!confirm(t('confirm_del')))return;
-  S.ponds=S.ponds.filter(p=>p.id!==S.active);S.active=S.ponds.length?S.ponds[0].id:null;saveS();renderAll();}
+function deletePond(){deletePondById(S.active);}
+function deletePondById(id,ev){if(ev)ev.stopPropagation();
+  const p=S.ponds.find(x=>x.id===id);if(!p)return;
+  if(!confirm(t('confirm_del').replace('{name}',p.name)))return;
+  S.ponds=S.ponds.filter(x=>x.id!==id);
+  if(S.active===id)S.active=S.ponds.length?S.ponds[0].id:null;
+  saveS();renderAll();}
 function switchPond(id){S.active=id;addingPond=false;saveS();renderAll();}
 
 /* ---------- derived ---------- */
@@ -691,7 +756,21 @@ function biomassKg(){const c=C();if(!c)return 0;return c.stocked*(c.survival/100
 function priceForCount(cnt){const c=C();if(!c||!cnt)return 0;
   const keys=Object.keys(c.prices).map(Number);let best=keys[0],bd=1e9;
   keys.forEach(k=>{const d=Math.abs(k-cnt);if(d<bd){bd=d;best=k;}});return c.prices[best];}
-function totalCost(){const c=C();if(!c)return 0;return c.seedCost+cumFeed()*c.feedPrice+(+c.addCost||0)+(+c.otherCost||0);}
+const EXCATS=[
+  ['power','⚡'],['labour','👷'],['aeration','🌀'],['probiotic','🦠'],['medicine','💊'],
+  ['prep','🧪'],['transport','🚚'],['lease','📄'],['other','➕']
+];
+const CATICON={seed:'🦐',feed:'🌾'};EXCATS.forEach(([id,ic])=>CATICON[id]=ic);
+let exCat='power';
+function expensesSum(){const c=C();return c&&c.expenses?c.expenses.reduce((s,e)=>s+(+e.amount||0),0):0;}
+function totalCost(){const c=C();if(!c)return 0;return (+c.seedCost||0)+cumFeed()*c.feedPrice+expensesSum();}
+/* migrate old addCost/otherCost from earlier versions into the expense log */
+function migrate(){let changed=false;S.ponds.forEach(p=>{
+  if(!p.expenses)p.expenses=[];
+  if(p.addCost){p.expenses.push({id:Date.now()+Math.random(),cat:'probiotic',amount:p.addCost,date:p.stockDate,note:''});p.addCost=0;changed=true;}
+  if(p.otherCost){p.expenses.push({id:Date.now()+Math.random(),cat:'other',amount:p.otherCost,date:p.stockDate,note:''});p.otherCost=0;changed=true;}
+});if(changed)saveS();}
+migrate();
 function docDays(){const c=C();if(!c)return 0;const d=Math.floor((Date.now()-new Date(c.stockDate).getTime())/86400000);return d<0?0:d;}
 function costPerKg(){const b=biomassKg();return b>0?totalCost()/b:0;}
 function fmt(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
@@ -711,11 +790,11 @@ function renderAll(){
   document.getElementById('cancelAdd').style.display=(addingPond&&S.ponds.length)?'block':'none';
   if(!c||addingPond){setup.style.display='block';dash.style.display='none';}
   else{setup.style.display='none';dash.style.display='block';renderDash();}
-  renderFeed();renderGrowth();renderMarket();renderQuotes();renderSheet();renderLearn();
+  renderFeed();renderGrowth();renderMarket();renderExpenses();renderQuotes();renderSheet();renderLearn();
 }
 function renderPondBar(){
   const bar=document.getElementById('pondbar');
-  bar.innerHTML=S.ponds.map(p=>`<button class="pondchip ${p.id===S.active&&!addingPond?'on':''}" onclick="switchPond(${p.id})"><span class="pd"></span>${p.name}</button>`).join('')
+  bar.innerHTML=S.ponds.map(p=>`<span class="pondchip ${p.id===S.active&&!addingPond?'on':''}"><button class="pondname" onclick="switchPond(${p.id})"><span class="pd"></span>${esc(p.name)}</button><button class="ponddel" onclick="deletePondById(${p.id},event)" aria-label="delete">×</button></span>`).join('')
     +(S.ponds.length?`<button class="pondchip addp" onclick="addPondStart()">+ ${t('add_pond')}</button>`:'');
 }
 function renderDash(){
@@ -828,8 +907,6 @@ function renderMarket(){
   document.getElementById('m_be').textContent=be?fmt(be)+t('perkg'):'—';
   const pe=document.getElementById('m_ppk');pe.textContent=(bio&&price)?fmt(ppk)+t('perkg'):'—';
   pe.style.color=ppk>=0?'var(--good)':'var(--bad)';
-  if(c){const a=document.getElementById('m_add'),o=document.getElementById('m_other');
-    if(document.activeElement!==a)a.value=c.addCost;if(document.activeElement!==o)o.value=c.otherCost;}
   const pt=document.getElementById('m_ptable'),prices=c?c.prices:DEFAULT_PRICES;
   const keys=Object.keys(prices).map(Number).sort((a,b)=>a-b);
   const here=cnt?keys.reduce((b,k)=>Math.abs(k-cnt)<Math.abs(b-cnt)?k:b,keys[0]):null;
@@ -840,6 +917,48 @@ function renderMarket(){
   renderTiming();
 }
 function setPrice(k,v){const c=C();if(!c)return;c.prices[k]=parseFloat(v)||c.prices[k];saveS();renderAll();}
+
+/* expenses */
+function renderExpenses(){
+  const c=C();
+  const seedEl=document.getElementById('ex_seed');
+  if(c&&document.activeElement!==seedEl)seedEl.value=c.seedCost||0;
+  // category chips
+  document.getElementById('ex_cats').innerHTML=EXCATS.map(([id,ic])=>
+    `<button class="chip ${id===exCat?'on':''}" onclick="setExCat('${id}')">${ic} ${t('cat_'+id)}</button>`).join('');
+  const total=totalCost();
+  document.getElementById('ex_total').textContent=fmt(total);
+  const bio=biomassKg();
+  document.getElementById('ex_perkg').textContent=bio?fmt(costPerKg())+t('perkg'):'';
+  // breakdown: seed + feed + each manual category
+  const parts=[];
+  if(c){
+    if(c.seedCost>0)parts.push(['seed',c.seedCost]);
+    const feedC=cumFeed()*c.feedPrice;if(feedC>0)parts.push(['feed',feedC]);
+    const byCat={};(c.expenses||[]).forEach(e=>{byCat[e.cat]=(byCat[e.cat]||0)+(+e.amount||0);});
+    Object.keys(byCat).forEach(k=>parts.push([k,byCat[k]]));
+  }
+  parts.sort((a,b)=>b[1]-a[1]);
+  const brk=document.getElementById('ex_break');
+  brk.innerHTML=total>0?parts.map(([cat,amt])=>{const pc=Math.round(amt/total*100);
+    return `<div class="exrow"><div class="exh">${CATICON[cat]||'•'} <span class="en">${t('cat_'+cat)}</span><span class="ep">${fmt(amt)}</span><span class="epc">${pc}%</span></div><div class="exbar"><i style="width:${pc}%"></i></div></div>`;}).join(''):'';
+  // list
+  const list=document.getElementById('ex_list');
+  if(!c){list.innerHTML='<div class="empty">'+t('need_crop')+'</div>';return;}
+  const es=[...(c.expenses||[])].reverse();
+  if(!es.length){list.innerHTML='<div class="empty">'+t('no_expense')+'</div>';return;}
+  list.innerHTML=es.map(e=>`<div class="exli"><div class="eci">${CATICON[e.cat]||'•'}</div>
+    <div class="ecn"><div class="t1">${t('cat_'+e.cat)}</div><div class="t2">${e.date}${e.note?' · '+esc(e.note):''}</div></div>
+    <span class="eamt">${fmt(e.amount)}</span><button class="exx" onclick="delExpense('${e.id}')">×</button></div>`).join('');
+}
+function setExCat(id){exCat=id;renderExpenses();}
+function addExpense(){const c=C();if(!c){go('pond');return;}
+  const amt=parseFloat(document.getElementById('ex_amt').value);if(!amt)return;
+  c.expenses.push({id:String(Date.now()),cat:exCat,amount:amt,date:new Date().toISOString().slice(0,10),
+    note:document.getElementById('ex_note').value.trim()});
+  document.getElementById('ex_amt').value='';document.getElementById('ex_note').value='';
+  saveS();renderAll();toast(t('saved'));}
+function delExpense(id){const c=C();c.expenses=c.expenses.filter(e=>String(e.id)!==String(id));saveS();renderAll();}
 
 /* timing */
 function computeADG(){const c=C();if(!c||c.samples.length<2)return 0.25;
@@ -976,11 +1095,10 @@ function setStage(s){stageSel=s;renderLearn();}
 
 /* live inputs */
 document.getElementById('d_survin').addEventListener('input',e=>{const c=C();if(!c)return;
-  c.survival=Math.min(100,Math.max(0,parseInt(e.target.value)||0));saveS();renderDash();renderMarket();renderFeed();renderQuotes();renderSheet();});
+  c.survival=Math.min(100,Math.max(0,parseInt(e.target.value)||0));saveS();renderDash();renderMarket();renderExpenses();renderFeed();renderQuotes();renderSheet();});
 document.getElementById('f_price').addEventListener('change',e=>{const c=C();if(!c)return;
   c.feedPrice=parseFloat(e.target.value)||c.feedPrice;saveS();renderAll();});
-document.getElementById('m_add').addEventListener('change',e=>{const c=C();if(!c)return;c.addCost=parseFloat(e.target.value)||0;saveS();renderAll();});
-document.getElementById('m_other').addEventListener('change',e=>{const c=C();if(!c)return;c.otherCost=parseFloat(e.target.value)||0;saveS();renderAll();});
+document.getElementById('ex_seed').addEventListener('change',e=>{const c=C();if(!c)return;c.seedCost=parseFloat(e.target.value)||0;saveS();renderAll();});
 document.getElementById('sh_place').addEventListener('input',e=>{const c=C();if(!c)return;c.place=e.target.value;saveS();renderSheet();});
 document.getElementById('sh_phone').addEventListener('input',e=>{const c=C();if(!c)return;c.phone=e.target.value;saveS();renderSheet();});
 
@@ -1093,7 +1211,8 @@ function shrimpIcon(size,bg){
   const bi=document.getElementById('brandImg');if(bi)bi.src=icon;
   const al=document.createElement('link');al.rel='apple-touch-icon';al.href=icon;document.head.appendChild(al);
   const fav=document.createElement('link');fav.rel='icon';fav.type='image/png';fav.href=icon192;document.head.appendChild(fav);
-  const manifest={name:'PANTA · Vannamei Crop',short_name:'PANTA',start_url:'.',display:'standalone',
+  const manifest={name:'PANTA · వెన్నామి పంట',short_name:'PANTA',start_url:'.',display:'standalone',lang:'te',
+    description:'వెన్నామి రొయ్య పంటను గమనించండి, అమ్మండి — రైతు అవగాహన కోసం మాత్రమే',
     background_color:'#0A0A0C',theme_color:'#0A0A0C',
     icons:[{src:icon192,sizes:'192x192',type:'image/png',purpose:'any'},{src:icon,sizes:'512x512',type:'image/png',purpose:'any'}]};
   const ml=document.createElement('link');ml.rel='manifest';
