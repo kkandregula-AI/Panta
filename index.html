@@ -201,7 +201,48 @@ section.on{display:block}
 .verdict.grow{background:var(--good-bg);color:var(--good)}
 .verdict.sell,.verdict.neutral{background:var(--warn-bg);color:var(--warn)}
 
-/* first-run guide */
+/* in-app guide */
+.guide-head{display:flex;align-items:flex-start;gap:12px}
+.guide-head>div{flex:1}
+.guide-print{flex:none;margin-top:20px;border:1px solid var(--line);border-radius:12px;
+  background:rgba(212,175,106,.08);color:var(--gold-soft);font-size:20px;padding:9px 13px}
+.guide-print:active{transform:scale(.95)}
+.gsec{display:flex;align-items:center;gap:10px;margin:26px 0 2px}
+.gsec .bar{height:1px;flex:1;background:var(--line-2)}
+.gsec .lbl{font-size:12.5px;letter-spacing:.06em;color:var(--gold-dim);font-weight:600}
+.guide-step{display:flex;gap:14px;padding:16px;margin-top:12px;border:1px solid var(--line-2);
+  border-radius:16px;background:var(--panel);break-inside:avoid}
+.guide-num{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;
+  font-family:"Cinzel",serif;font-size:19px;font-weight:700;color:#100e08;
+  background:linear-gradient(160deg,var(--gold-soft),var(--gold-dim))}
+.guide-b{flex:1;min-width:0}
+.guide-tab{display:inline-block;font-size:12px;font-weight:600;color:var(--gold-soft);
+  border:1px solid var(--line);border-radius:999px;padding:2px 11px;margin-bottom:7px}
+.guide-b h3{font-size:16.5px;font-weight:700;margin:0 0 5px;color:var(--text)}
+.guide-b p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.guide-why{margin-top:9px;font-size:13.5px;color:var(--gold-soft);padding-left:11px;border-left:2px solid var(--gold-dim);line-height:1.5}
+.guide-daily{margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:16px;
+  background:linear-gradient(160deg,rgba(212,175,106,.10),transparent);break-inside:avoid}
+.guide-daily h3{margin:0 0 9px;font-size:16px;color:var(--gold-soft)}
+.guide-daily ul{margin:0;padding-left:20px}
+.guide-daily li{font-size:14.5px;margin:5px 0;color:var(--text)}
+.guide-tip{margin-top:12px;border:1px dashed var(--line);border-radius:13px;padding:14px;
+  font-size:14px;color:var(--muted);line-height:1.65;break-inside:avoid}
+.guide-tip b{color:var(--gold-soft)}
+
+@media print{
+  header,nav,.printbtn,.langtoggle,.pondbar{display:none!important}
+  section{display:none!important}
+  #guide{display:block!important}
+  body{background:#fff;color:#1a1712;padding:0}
+  .guide-head .eyebrow,.guide-b p{color:#4a4436!important}
+  .h-lead,.guide-b h3,.guide-daily li{color:#1a1712!important}
+  .guide-step,.guide-daily,.guide-tip{background:#fff!important;border-color:#d8cdb2!important}
+  .guide-why,.gsec .lbl,.guide-daily h3,.guide-tip b{color:#8a6d2e!important}
+  .guide-tab{color:#8a6d2e!important;border-color:#caa85a!important}
+  .guide-num{background:#b3924e!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .guide-print{display:none!important}
+}
 .gstep{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line-2)}
 .gstep:last-child{border-bottom:none}
 .gstep .gk{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gold-dim);display:grid;place-items:center;
@@ -260,12 +301,12 @@ section.on{display:block}
 .tip p b{color:var(--text);font-weight:600}
 
 nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:space-around;
-  padding:9px 3px calc(9px + env(safe-area-inset-bottom));
+  padding:8px 2px calc(8px + env(safe-area-inset-bottom));
   background:linear-gradient(0deg,rgba(10,10,12,.99),rgba(10,10,12,.9));
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line-2)}
-.nav-b{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 1px;flex:1;min-width:0;color:var(--faint)}
-.nav-b svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
-.nav-b .nl{font-size:9.5px;font-weight:500;white-space:nowrap}
+.nav-b{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;flex:1;min-width:0;color:var(--faint)}
+.nav-b svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7}
+.nav-b .nl{font-size:8.7px;font-weight:500;white-space:nowrap}
 .nav-b.on{color:var(--gold-soft)}
 
 footer{text-align:center;padding:24px 20px 12px;color:var(--faint);font-size:11px;line-height:1.9}
@@ -298,6 +339,19 @@ footer b{color:var(--gold-dim);font-weight:500}
 </header>
 
 <main>
+  <!-- GUIDE -->
+  <section id="guide" class="on">
+    <div class="guide-head">
+      <div>
+        <div class="eyebrow" id="guide_eyebrow" style="margin-top:18px">PANTA</div>
+        <h1 class="h-lead" id="guide_title">How to use PANTA</h1>
+      </div>
+      <button class="guide-print" onclick="window.print()" id="guide_print">🖨</button>
+    </div>
+    <p class="sub" id="guide_intro"></p>
+    <div id="guideBody"></div>
+  </section>
+
   <!-- POND -->
   <section id="pond" class="on">
     <div id="setupView">
@@ -646,7 +700,7 @@ en:{
  stage1:"Day 1–30", stage2:"Day 31–60", stage3:"Day 61–90", stage4:"Day 90+",
  edu_only:"Education & awareness only",
  disclaimer:"For farmer education and awareness only — not financial, veterinary or trading advice. All growth, survival, cost and price figures are rough estimates, not guarantees. Always confirm count, rate and pond health with your buyer, technician or dealer before making any decision.",
- nav_pond:"Pond", nav_feed:"Feed", nav_growth:"Growth", nav_market:"Market", nav_costs:"Costs", nav_sell:"Sell", nav_learn:"Learn",
+ nav_pond:"Pond", nav_feed:"Feed", nav_growth:"Growth", nav_market:"Market", nav_costs:"Costs", nav_sell:"Sell", nav_learn:"Learn", nav_guide:"Guide",
  days:"days", day:"day", perkg:"/kg", good:"Good", watch:"Watch", high:"High", low:"Low",
  need_fields:"Please fill stocking date and seed count.", no_feed:"No feed added yet.",
  no_sample:"No sample yet. Add your first weight above.", need_crop:"Start a crop first.",
@@ -722,7 +776,7 @@ te:{
  stage1:"రోజు 1–30", stage2:"రోజు 31–60", stage3:"రోజు 61–90", stage4:"రోజు 90+",
  edu_only:"విద్య, అవగాహన కోసం మాత్రమే",
  disclaimer:"రైతు అవగాహన, విద్య కోసం మాత్రమే — ఇది ఆర్థిక, పశువైద్య లేదా వ్యాపార సలహా కాదు. పెరుగుదల, బతికిన శాతం, ఖర్చు, ధర అంకెలు అన్నీ సుమారు అంచనాలే, హామీ కాదు. ఏ నిర్ణయం తీసుకునే ముందైనా కౌంట్, ధర, చెరువు ఆరోగ్యాన్ని మీ కొనుగోలుదారు, టెక్నీషియన్ లేదా డీలర్‌తో నిర్ధారించుకోండి.",
- nav_pond:"చెరువు", nav_feed:"దాణా", nav_growth:"పెరుగుదల", nav_market:"మార్కెట్", nav_costs:"ఖర్చులు", nav_sell:"అమ్మకం", nav_learn:"తెలుసుకో",
+ nav_pond:"చెరువు", nav_feed:"దాణా", nav_growth:"పెరుగుదల", nav_market:"మార్కెట్", nav_costs:"ఖర్చులు", nav_sell:"అమ్మకం", nav_learn:"తెలుసుకో", nav_guide:"గైడ్",
  days:"రోజులు", day:"రోజు", perkg:"/కేజీ", good:"బాగుంది", watch:"గమనించండి", high:"ఎక్కువ", low:"తక్కువ",
  need_fields:"పిల్లలు వేసిన తేదీ, సంఖ్య నింపండి.", no_feed:"ఇంకా దాణా చేర్చలేదు.",
  no_sample:"ఇంకా నమూనా లేదు. పైన మొదటి బరువు చేర్చండి.", need_crop:"ముందు పంట మొదలుపెట్టండి.",
@@ -743,7 +797,8 @@ function toast(m){const el=document.getElementById('toast');el.textContent=m;el.
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),1600);}
 
 /* ---------- nav ---------- */
-const NAV=[['pond','nav_pond','M4 10l8-6 8 6M6 9v10h12V9'],
+const NAV=[['guide','nav_guide','M4 6h2M4 12h2M4 18h2M9 6h11M9 12h11M9 18h8'],
+['pond','nav_pond','M4 10l8-6 8 6M6 9v10h12V9'],
 ['feed','nav_feed','M12 3v4M8 7h8l-1 5a3 3 0 01-6 0zM10 17v4M14 17v4'],
 ['costs','nav_costs','M3 7h15a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a1 1 0 011-1h13M16 13h.5'],
 ['growth','nav_growth','M4 19V5M4 19h16M7 15l3-4 3 2 4-7'],
@@ -832,7 +887,7 @@ function renderAll(){
   document.getElementById('cancelAdd').style.display=(addingPond&&S.ponds.length)?'block':'none';
   if(!c||addingPond){setup.style.display='block';dash.style.display='none';}
   else{setup.style.display='none';dash.style.display='block';renderDash();}
-  renderFeed();renderGrowth();renderMarket();renderExpenses();renderQuotes();renderSheet();renderLearn();
+  renderFeed();renderGrowth();renderMarket();renderExpenses();renderQuotes();renderSheet();renderLearn();renderGuide();
 }
 function renderPondBar(){
   const bar=document.getElementById('pondbar');
@@ -1110,6 +1165,61 @@ function copySheet(){const txt=sheetText();if(!txt)return;
 function shareSheet(){const txt=sheetText();if(!txt)return;
   if(navigator.share)navigator.share({text:txt}).catch(()=>{});else copySheet();}
 
+/* ---------- in-app usage guide ---------- */
+const GUIDE={
+ en:{title:"How to use PANTA",
+  intro:"Just do these 8 steps in order. Your crop's growth, cost, value and profit all live on your phone — even without internet.",
+  g1:"First time — do these in order", g2:"When it's time to sell", g3:"Good habits",
+  daily_h:"⏱ 2 minutes a day is enough",
+  daily:["Add today's feed.","Add any cost right away.","Weigh a sample once a week."],
+  tips:["📚 <b>Learn tab:</b> plain-language tips for exactly your crop's stage — seed, check-tray, white gut, no banned antibiotics.",
+    "🌐 <b>Language:</b> the app opens in Telugu. Tap <b>EN</b> at the top-right to switch to English. &nbsp; 📲 <b>Install:</b> use \"Add to Home Screen\" in your browser to run it like an app, offline.",
+    "✅ <b>Enter real numbers, don't guess.</b> The more honest your numbers, the truer the results — weigh, check the tray, then enter."],
+  steps:[
+   ["Pond","Enter pond details","Fill pond name, acres, stocking date, seed count and seed cost, then tap \"Start crop\".","Enter once — the whole crop is calculated from this."],
+   ["Feed","Add feed every day","Tap +5, +10, +25, +50 for today's feed, then Save. Set the feed price (₹/kg) too.","Feed is your biggest cost — FCR and cost per kg come from this."],
+   ["Costs","Add your other costs","Electricity/diesel, labour, aeration, probiotics, medicines, pond prep, transport — pick a category, add the amount.","Only with every cost in does your cost per kg become real."],
+   ["Growth","Weigh a sample weekly","Every 5–7 days, weigh a handful and divide by how many, then add the average weight (g).","Weight gives your count and your crop value — value shows only after this."],
+   ["Market","See value & \"sell or grow\"","Set today's price for your count, then use \"Sell now, or grow bigger?\" to weigh the gain.","Bigger shrimp = lower count = higher price per kg."],
+   ["Sell","Compare buyer quotes","Add 2–3 buyers' rates. The best is marked ★, compared against your own cost.","You'll know which price actually pays before you commit."],
+   ["Sell","Share the sell message","Add your village and phone, tap Share — a ready WhatsApp message builds itself from your crop.","More buyers reached means a better chance at a good price."],
+   ["Sell","Record the sale","Enter harvested kg, count and the rate you got — your net profit appears.","This crop's numbers guide the next crop's profit."]]},
+ te:{title:"PANTA ఎలా వాడాలి",
+  intro:"ఈ 8 అడుగులు వరుసగా చేస్తే చాలు. మీ పంట పెరుగుదల, ఖర్చు, విలువ, లాభం అన్నీ ఫోన్‌లోనే — ఇంటర్నెట్ లేకున్నా.",
+  g1:"మొదటిసారి — వరుసగా చేయండి", g2:"అమ్మే సమయం వచ్చినప్పుడు", g3:"మంచి అలవాట్లు",
+  daily_h:"⏱ రోజూ 2 నిమిషాలు చాలు",
+  daily:["ఈరోజు వేసిన దాణా చేర్చండి.","ఏదైనా ఖర్చు అయితే వెంటనే చేర్చండి.","వారానికోసారి నమూనా బరువు చేర్చండి."],
+  tips:["📚 <b>\"తెలుసుకో\" ట్యాబ్:</b> మీ పంట ఏ దశలో ఉందో దానికి తగిన సలహాలు — విత్తనం, చెక్‌ట్రే, వైట్ గట్, యాంటీబయాటిక్స్ వద్దు — సులభ భాషలో.",
+    "🌐 <b>భాష:</b> యాప్ తెలుగులోనే తెరుచుకుంటుంది. కావాలంటే పైన కుడివైపు <b>EN</b> నొక్కి ఇంగ్లీష్‌లోకి మార్చుకోవచ్చు. &nbsp; 📲 <b>ఇన్‌స్టాల్:</b> బ్రౌజర్‌లో \"Add to Home Screen\" నొక్కితే యాప్‌లా, ఇంటర్నెట్ లేకున్నా పనిచేస్తుంది.",
+    "✅ <b>నిజమైన అంకెలే పెట్టండి, అంచనా వేయకండి.</b> మీ అంకెలు ఎంత నిజమైతే లెక్కలు అంత నిజం — తూకం వేసి, చెక్‌ట్రే చూసి పెట్టండి."],
+  steps:[
+   ["చెరువు","చెరువు వివరాలు పెట్టండి","చెరువు పేరు, ఎకరాలు, పిల్లలు వేసిన తేదీ, పిల్లల సంఖ్య, విత్తన ఖర్చు నింపి \"పంట మొదలుపెట్టు\" నొక్కండి.","ఒక్కసారి పెడితే చాలు — పంట మొత్తం లెక్క దీని మీదే ఆధారపడుతుంది."],
+   ["దాణా","రోజూ దాణా చేర్చండి","+5, +10, +25, +50 బటన్లతో ఈరోజు వేసిన దాణా నొక్కి \"భద్రపరచు\". దాణా ధర (₹/కేజీ) కూడా పెట్టండి.","దాణాయే అతిపెద్ద ఖర్చు. దీని నుంచే FCR, కేజీకి ఖర్చు వస్తాయి."],
+   ["ఖర్చులు","మిగతా ఖర్చులు చేర్చండి","కరెంట్/డీజిల్, కూలీ, ఏరియేషన్, ప్రోబయోటిక్స్, మందులు, చెరువు తయారీ, రవాణా — వర్గం ఎంచుకుని మొత్తం చేర్చండి.","అన్ని ఖర్చులూ పెడితేనే \"కేజీకి ఖర్చు\" నిజమవుతుంది."],
+   ["పెరుగుదల","వారానికోసారి నమూనా బరువు","5–7 రోజులకోసారి గుప్పెడు రొయ్యలు తూకం వేసి, ఎన్ని ఉన్నాయో దానితో భాగించి సగటు బరువు (గ్రా) చేర్చండి.","బరువు నుంచే కౌంట్, పంట విలువ కనిపిస్తాయి — ఇది చేర్చాకే విలువ చూపిస్తుంది."],
+   ["మార్కెట్","పంట విలువ, \"అమ్మాలా పెంచాలా\" చూడండి","ఈరోజు కౌంట్‌కి ధర పెట్టి, \"ఇప్పుడు అమ్మాలా, పెద్దగా పెంచాలా?\" లో లక్ష్య కౌంట్ ఎంచుకుని లాభం చూడండి.","పెద్ద రొయ్య = తక్కువ కౌంట్ = కేజీకి ఎక్కువ ధర."],
+   ["అమ్మకం","కొనుగోలుదారుల ధరలు పోల్చండి","ఒక్కరిని కాదు — 2–3 మంది ఇచ్చే ధరలు చేర్చండి. మంచి ఆఫర్ ★ గుర్తుతో, మీ ఖర్చుతో పోల్చి కనిపిస్తుంది.","ఏ ధర తీసుకుంటే ఎంత లాభమో ముందే తెలుస్తుంది."],
+   ["అమ్మకం","అమ్మకం సందేశం వాట్సాప్‌లో పంపండి","ఊరు, ఫోన్ నంబర్ పెట్టి \"పంపు\" నొక్కితే — కౌంట్, బరువు, ధరతో సందేశం దానంతట తయారవుతుంది.","ఎక్కువ మంది కొనుగోలుదారులకు చేరితే మంచి ధర వచ్చే అవకాశం."],
+   ["అమ్మకం","అమ్మిన తర్వాత నమోదు చేయండి","పట్టిన బరువు (కేజీ), కౌంట్, వచ్చిన ధర పెట్టండి — నికర లాభం కనిపిస్తుంది.","ఈ పంట లెక్కలే — FCR, బతికిన శాతం, కేజీకి ఖర్చు — వచ్చే పంటకు దారి."]]}
+};
+function renderGuide(){
+  const G=GUIDE[lang]||GUIDE.te;
+  document.getElementById('guide_title').textContent=G.title;
+  document.getElementById('guide_intro').textContent=G.intro;
+  document.getElementById('guide_print').title=G.print||'Print';
+  const stepHtml=(from,to)=>G.steps.slice(from,to).map((s,i)=>`
+    <div class="guide-step"><div class="guide-num">${from+i+1}</div>
+      <div class="guide-b"><span class="guide-tab">${s[0]}</span>
+        <h3>${s[1]}</h3><p>${s[2]}</p><div class="guide-why">${s[3]}</div></div></div>`).join('');
+  const sec=l=>`<div class="gsec"><span class="lbl">${l}</span><span class="bar"></span></div>`;
+  document.getElementById('guideBody').innerHTML=
+    sec(G.g1)+stepHtml(0,4)+
+    sec(G.g2)+stepHtml(4,8)+
+    sec(G.g3)+
+    `<div class="guide-daily"><h3>${G.daily_h}</h3><ul>${G.daily.map(d=>`<li>${d}</li>`).join('')}</ul></div>`+
+    G.tips.map(tp=>`<div class="guide-tip">${tp}</div>`).join('');
+}
+
 /* learn */
 const TIPS={
  1:[['◆','Seed & start','Good seed decides half the crop. Ask for <b>SPF, antibiotic-free</b> seed with a hatchery test report. Acclimatise slowly before release.'],
@@ -1288,6 +1398,7 @@ function shrimpIcon(size,bg){
 })();
 
 setLang(lang);
+go(S.ponds.length?'pond':'guide');
 </script>
 </body>
 </html>
