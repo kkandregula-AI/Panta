@@ -907,8 +907,8 @@ function renderDash(){
 function renderFeed(){
   const c=C(),list=document.getElementById('f_list');
   document.getElementById('f_total').innerHTML=cumFeed().toLocaleString('en-IN')+' <small>'+t('kg')+'</small>';
-  if(c){const fp=document.getElementById('f_price');if(document.activeElement!==fp)fp.value=c.feedPrice;
-    document.getElementById('f_cost').textContent=fmt(cumFeed()*c.feedPrice);}
+  document.getElementById('f_cost').textContent=fmt(c?cumFeed()*c.feedPrice:0);
+  const fp=document.getElementById('f_price');if(c&&document.activeElement!==fp)fp.value=c.feedPrice;
   // advisor
   const abw=latestABW(),bio=biomassKg();
   const ak=document.getElementById('ad_kg'),an=document.getElementById('ad_note');
@@ -1100,8 +1100,9 @@ function sheetText(){
 }
 function renderSheet(){
   const c=C(),el=document.getElementById('sh_text');
-  if(c){const p=document.getElementById('sh_place'),ph=document.getElementById('sh_phone');
-    if(document.activeElement!==p)p.value=c.place||'';if(document.activeElement!==ph)ph.value=c.phone||'';}
+  const p=document.getElementById('sh_place'),ph=document.getElementById('sh_phone');
+  if(document.activeElement!==p)p.value=c?(c.place||''):'';
+  if(document.activeElement!==ph)ph.value=c?(c.phone||''):'';
   const txt=sheetText();el.textContent=txt||t('sheet_wait');
 }
 function copySheet(){const txt=sheetText();if(!txt)return;
