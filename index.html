@@ -201,7 +201,21 @@ section.on{display:block}
 .verdict.grow{background:var(--good-bg);color:var(--good)}
 .verdict.sell,.verdict.neutral{background:var(--warn-bg);color:var(--warn)}
 
-/* expense breakdown */
+/* first-run guide */
+.gstep{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.gstep:last-child{border-bottom:none}
+.gstep .gk{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gold-dim);display:grid;place-items:center;
+  font-size:14px;color:var(--gold-dim);flex:none;font-family:"DM Mono",monospace;font-weight:500}
+.gstep.done .gk{background:var(--good);border-color:var(--good);color:#0A0A0C}
+.gstep .gt{flex:1;min-width:0}
+.gstep .gt .g1{font-size:15.5px;font-weight:600}
+.gstep.done .gt .g1{color:var(--muted);font-weight:500}
+.gstep .gt .g2{font-size:12px;color:var(--faint);margin-top:2px}
+.gstep .ggo{border:1px solid var(--gold-dim);border-radius:10px;padding:9px 16px;font-size:14px;font-weight:600;
+  color:var(--gold-soft);background:rgba(212,175,106,.09);flex:none}
+.gstep .ggo:active{transform:scale(.95)}
+.gstep.done .ggo{display:none}
+.gstep .gdone{font-size:12.5px;color:var(--good);flex:none;font-weight:600}
 .exrow{margin-top:11px}
 .exrow .exh{display:flex;align-items:center;gap:8px;font-size:13.5px}
 .exrow .exh .en{color:var(--text)} .exrow .exh .ep{margin-left:auto;font-family:"DM Mono",monospace;color:var(--gold-soft)}
@@ -307,6 +321,22 @@ footer b{color:var(--gold-dim);font-weight:500}
 
     <div id="dashView" style="display:none">
       <div class="eyebrow"><span id="d_pond"></span> · <span data-k="vannamei">Vannamei</span> · <span id="d_area"></span></div>
+
+      <!-- first-run guide -->
+      <div id="startGuide" style="display:none">
+        <div class="hero"><div class="hero-in">
+          <div class="lbl" data-k="crop_started">Crop started</div>
+          <div class="val" style="font-size:26px" id="g_day">Day 0</div>
+          <div class="ad" data-k="guide_intro" style="font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.5">Do these in order. Your crop value appears once you add a growth sample.</div>
+        </div></div>
+        <div class="card gold">
+          <h3 data-k="next_steps">Next steps</h3>
+          <div id="guideSteps"></div>
+        </div>
+      </div>
+
+      <!-- live data (shown once a sample exists) -->
+      <div id="dashData" style="display:none">
       <div class="hero"><div class="hero-in">
         <div class="lbl" data-k="value_today">Crop value today</div>
         <div class="val" id="d_value">₹0</div>
@@ -340,6 +370,8 @@ footer b{color:var(--gold-dim);font-weight:500}
         <div class="field" style="margin-top:0"><label data-k="survival_edit">Your survival estimate (%)</label><input id="d_survin" inputmode="numeric"></div>
         <p class="sub" data-k="surv_help">Not sure? Most healthy vannamei ponds run 70–85%. Your technician's check-tray count is the best guide.</p>
       </div>
+      </div>
+
       <button class="btn ghost" onclick="deletePond()" data-k="delete_pond">Delete this pond</button>
     </div>
   </section>
@@ -554,6 +586,11 @@ en:{
  biomass:"Biomass", survival:"Survival", fcr:"FCR", profit_est:"Est. profit", spent:"Spent so far",
  survival_edit:"Your survival estimate (%)",
  surv_help:"Not sure? Most healthy vannamei ponds run 70–85%. Your technician's check-tray count is the best guide.",
+ crop_started:"Crop started", guide_intro:"Do these in order. Your crop value appears once you add a growth sample.",
+ next_steps:"Next steps", step_crop:"Crop details saved", step_feed:"Add today's feed",
+ step_feed_hint:"Start logging your daily feed", step_cost:"Add your costs",
+ step_cost_hint:"Power, labour, pond prep, transport…", step_sample:"Add a growth sample",
+ step_sample_hint:"After ~2 weeks, weigh a sample to unlock value", done:"Done", open_btn:"Open",
  delete_pond:"Delete this pond", add_pond:"Add pond",
  pocket_title:"Your money line", cost_kg:"Cost per kg", market_kg:"Market price",
  pocket_good:"You are above cost. Every kg you harvest now earns you {x} profit.",
@@ -613,7 +650,7 @@ en:{
  days:"days", day:"day", perkg:"/kg", good:"Good", watch:"Watch", high:"High", low:"Low",
  need_fields:"Please fill stocking date and seed count.", no_feed:"No feed added yet.",
  no_sample:"No sample yet. Add your first weight above.", need_crop:"Start a crop first.",
- saved:"Saved", confirm_del:"Delete this pond and all its data?", confirm_new:"Start a new crop?"
+ saved:"Saved", confirm_del:"Delete pond \"{name}\" and all its data? This cannot be undone.", confirm_new:"Start a new crop?"
 },
 te:{
  tagline:"మీ రొయ్య పంటను గమనించండి, అమ్మండి",
@@ -625,6 +662,11 @@ te:{
  biomass:"మొత్తం బరువు", survival:"బతికినవి", fcr:"ఎఫ్‌సీఆర్", profit_est:"అంచనా లాభం", spent:"ఇప్పటివరకు ఖర్చు",
  survival_edit:"మీ అంచనా బతికిన శాతం (%)",
  surv_help:"తెలియదా? ఆరోగ్యంగా ఉన్న చాలా వెన్నామి చెరువుల్లో 70–85% ఉంటుంది. మీ టెక్నీషియన్ చెక్‌ట్రే లెక్కే మంచి కొలమానం.",
+ crop_started:"పంట మొదలైంది", guide_intro:"వీటిని వరుసగా చేయండి. పెరుగుదల నమూనా చేర్చాక మీ పంట విలువ కనిపిస్తుంది.",
+ next_steps:"తర్వాతి అడుగులు", step_crop:"పంట వివరాలు భద్రమయ్యాయి", step_feed:"ఈరోజు దాణా చేర్చండి",
+ step_feed_hint:"రోజువారీ దాణా నమోదు మొదలుపెట్టండి", step_cost:"మీ ఖర్చులు చేర్చండి",
+ step_cost_hint:"కరెంట్, కూలీ, చెరువు తయారీ, రవాణా…", step_sample:"పెరుగుదల నమూనా చేర్చండి",
+ step_sample_hint:"సుమారు 2 వారాల తర్వాత నమూనా తూకం వేస్తే విలువ కనిపిస్తుంది", done:"అయ్యింది", open_btn:"తెరువు",
  delete_pond:"ఈ చెరువును తొలగించు", add_pond:"చెరువు చేర్చు",
  pocket_title:"మీ డబ్బు గీత", cost_kg:"కేజీకి ఖర్చు", market_kg:"మార్కెట్ ధర",
  pocket_good:"మీరు ఖర్చు కంటే పైన ఉన్నారు. ఇప్పుడు పట్టే ప్రతి కేజీకి {x} లాభం.",
@@ -684,7 +726,7 @@ te:{
  days:"రోజులు", day:"రోజు", perkg:"/కేజీ", good:"బాగుంది", watch:"గమనించండి", high:"ఎక్కువ", low:"తక్కువ",
  need_fields:"పిల్లలు వేసిన తేదీ, సంఖ్య నింపండి.", no_feed:"ఇంకా దాణా చేర్చలేదు.",
  no_sample:"ఇంకా నమూనా లేదు. పైన మొదటి బరువు చేర్చండి.", need_crop:"ముందు పంట మొదలుపెట్టండి.",
- saved:"భద్రమైంది", confirm_del:"ఈ చెరువును, దాని డేటా మొత్తాన్ని తొలగించాలా?", confirm_new:"కొత్త పంట మొదలుపెట్టాలా?"
+ saved:"భద్రమైంది", confirm_del:"\"{name}\" చెరువును, దాని డేటా మొత్తాన్ని తొలగించాలా? ఇది తిరిగి రాదు.", confirm_new:"కొత్త పంట మొదలుపెట్టాలా?"
 }};
 let lang=store.get('pt_lang')||'te';
 function t(k){return (DICT[lang]&&DICT[lang][k])||DICT.en[k]||k;}
@@ -703,9 +745,9 @@ function toast(m){const el=document.getElementById('toast');el.textContent=m;el.
 /* ---------- nav ---------- */
 const NAV=[['pond','nav_pond','M4 10l8-6 8 6M6 9v10h12V9'],
 ['feed','nav_feed','M12 3v4M8 7h8l-1 5a3 3 0 01-6 0zM10 17v4M14 17v4'],
+['costs','nav_costs','M3 7h15a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a1 1 0 011-1h13M16 13h.5'],
 ['growth','nav_growth','M4 19V5M4 19h16M7 15l3-4 3 2 4-7'],
 ['market','nav_market','M4 9h16l-1 11H5zM8 9V6a4 4 0 018 0v3'],
-['costs','nav_costs','M3 7h15a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a1 1 0 011-1h13M16 13h.5'],
 ['sell','nav_sell','M6 3h12l1 6H5zM5 9v11h14V9M9 13h6'],
 ['learn','nav_learn','M12 6s-2-2-5-2H3v13h4c3 0 5 2 5 2s2-2 5-2h4V4h-4c-3 0-5 2-5 2zM12 6v13']];
 const nav=document.getElementById('nav');
@@ -802,6 +844,29 @@ function renderDash(){
   const value=bio*price,cost=totalCost(),profit=value-cost,fcr=bio>0?cumFeed()/bio:0,cpk=costPerKg();
   document.getElementById('d_pond').textContent=c.name;
   document.getElementById('d_area').textContent=c.area+' '+(lang==='te'?'ఎకరాలు':'ac');
+
+  // first-run guide vs live data
+  const hasFeed=c.feeds.length>0, hasCost=(c.expenses&&c.expenses.length>0), hasSample=c.samples.length>0;
+  const guide=document.getElementById('startGuide'), data=document.getElementById('dashData');
+  if(!hasSample){
+    guide.style.display='block';data.style.display='none';
+    document.getElementById('g_day').textContent=t('doc')+' '+docDays();
+    const steps=[
+      ['crop',true,'step_crop',null,null],
+      ['feed',hasFeed,'step_feed','step_feed_hint','feed'],
+      ['cost',hasCost,'step_cost','step_cost_hint','costs'],
+      ['sample',hasSample,'step_sample','step_sample_hint','growth']
+    ];
+    document.getElementById('guideSteps').innerHTML=steps.map(([id,done,lk,hint,tab],i)=>`
+      <div class="gstep ${done?'done':''}">
+        <div class="gk">${done?'✓':i+1}</div>
+        <div class="gt"><div class="g1">${t(lk)}</div>${hint&&!done?`<div class="g2">${t(hint)}</div>`:''}</div>
+        ${done?`<span class="gdone">${t('done')}</span>`:(tab?`<button class="ggo" onclick="go('${tab}')">${t('open_btn')}</button>`:'')}
+      </div>`).join('');
+    return;
+  }
+  guide.style.display='none';data.style.display='block';
+
   document.getElementById('d_value').textContent=fmt(value);
   document.getElementById('d_doc').textContent=docDays();
   document.getElementById('d_count').textContent=cnt||'—';
